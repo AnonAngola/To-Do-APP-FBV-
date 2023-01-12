@@ -1,0 +1,45 @@
+<!-- Base template -->
+{% load static %}
+<!doctype html>
+
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Required meta tags -->
+
+    <!--Simple.css-->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+    <title>Django To-do Lists</title>
+
+</head>
+
+
+<body>
+    
+    <div>
+        
+        <h1><a href="{% url "index" %}">Django To-do Lists</a></h1>
+        <h3>User: {{ user.Username }}</h3>
+        {% if Is_login == True %}
+
+        {% else %}
+            <strong><a href="{% url 'logout' %}">Logout</a></strong>
+        {% endif %}
+    </div>
+
+    <div>
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+</body>
+
+
+</html>

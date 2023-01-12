@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h4><a href="{% url "list" actual_list.id %}"> Go back to {{ actual_list }}</a></h4>
+    <form method="POST">
+       {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <input type="submit" value="Update">
+        <input type="button" value="Delete" onclick=location.href="{% url 'delete' item.id %}">
+
+    </form>
+
+{% endblock %}
+</html>

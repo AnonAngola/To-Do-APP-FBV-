@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+<form action="{% url 'register' %}" method="POST">
+{% csrf_token %}
+
+<p>
+<label for="id_Username">Username</label>
+<input type="text" name="Username" maxlength="30" required id="id_Username">
+</p>
+
+<p>
+<label for="id_email">Endereço de email:</label>
+<input type="email" name="email" maxlength="254" required id="id_email">
+</p>
+
+
+<p>
+<label for="id_password">Palavra-passe:</label>
+<input type="password" name="password" maxlength="128" required id="id_password">
+</p>
+
+<p>
+<label for="id_password2">Palavra-passe (Repita):</label>
+<input type="password" name="password2" maxlength="128" required id="id_password2">
+</p>
+
+<input type="submit" value="register">
+
+</form>
+
+{% endblock %}
+</html>

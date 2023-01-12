@@ -1,0 +1,63 @@
+<!-- todo_list/todo_app/templates/todo_app/todo_list.html -->
+
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<div>
+
+    <div>
+        <h4><a href="{% url 'index' %}">Home</a></h4>
+
+        <div>
+
+            <h2>{{ list_title.title | upper }}</h2>
+            
+
+        </div>
+
+        <ul>
+
+            {% for item in items %}
+
+            <li>
+
+                <div>
+                    <a href="{% url 'update' item.id %}">
+                        <div
+
+                            role="button"
+
+                            onclick="location.href='#'">
+
+                            {{ item.title }}
+
+                            (Due: {{ item.due_date | date:"d M Y" }})
+
+                        </div>
+                    </a>
+
+                </div>
+
+            </li>
+
+            {% empty %}
+
+            <p>There are no to-do items in this list.</p>
+
+            {% endfor %}
+
+        </ul>
+
+        <p>
+
+            <input value="Add a new item" type="button" onclick=location.href="{% url 'create' list_title.id %}" />
+            <button  onclick=location.href="{% url 'deletelist' list_title.id %}">Delete List</button>
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}
