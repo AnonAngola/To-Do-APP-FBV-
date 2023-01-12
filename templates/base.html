@@ -28,7 +28,7 @@
         {% if Is_login == True %}
         
         {% else %}
-            <h3>User: {{ user.Username }}</h3>
+            <h3>User: {{ user.Username }} </h3>
             <strong><a href="{% url 'logout' %}">Logout</a></strong>
         {% endif %}
     </div>
