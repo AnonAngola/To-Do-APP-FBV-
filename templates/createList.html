@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+<h4><a href="{% url 'home' %}">Home</a></h4>
 <form method="post">
     {% csrf_token %}
         <label for="id_title">Title:</label>

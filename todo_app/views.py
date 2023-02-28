@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render, get_list_or_404
 
 from .form import CustomUserForm, todoitemForm, todolistForm
 from .models import *
@@ -10,7 +10,7 @@ from .models import *
 
 def UserLogin(request):
     if request.user.is_authenticated:
-        return redirect('index')
+        return redirect('home')
     else:
         if request.method == 'GET':
             Is_login = True
@@ -23,7 +23,7 @@ def UserLogin(request):
             user = authenticate(email=email, password=password)
             if user:
                 login(request, user)
-                return redirect('index')
+                return redirect('home')
             else:
                 return HttpResponse('  Credenciais inválias')
 
@@ -50,13 +50,14 @@ def UserLogout(request):
 
 @login_required
 def home(request):
-        use = request.user
-        todo_list = ToDoList.objects.filter(userID_id=use.id)
-        context = {'todo_list':todo_list,}
+        user = request.user.id
+        user_name  = CustomUser.objects.get(id=user)
+        todo_list = ToDoList.objects.filter(userID_id=user)
+        context = {'todo_list':todo_list,'user':user_name}
         return render(request, 'home.html', context)
 
 @login_required
-def list(request, pk):
+def ListTask(request, pk):
     items = ToDoItem.objects.filter(todo_list_id=pk)
     list_title = get_object_or_404(ToDoList,pk=pk)
     context = {'items':items, 'list_title':list_title}
@@ -96,20 +97,19 @@ def delete(request, pk):
     return redirect('list', pk=list_id)
 
 @login_required
-def create(request, pk):
+def CreateTask(request, pk):
     if request.method == 'GET':
-        actual_list = ToDoList.objects.get(pk=pk)
-        form = todolistForm(request.POST or None)
-        context = {'form':form, 'actual_list':actual_list}
+        todo_list = ToDoList.objects.get(pk=pk)
+        form = todoitemForm(request.POST or None)
+        context = {'form':form, 'actual_list':todo_list}
         return render(request, 'create.html', context)
     else:
-        title = request.POST['title']
-        description = request.POST['description']
-        due_date = request.POST['due_date']
-        todo_list = request.POST['todo_list']
-        form = ToDoItem(title=title, description=description, due_date=due_date, todo_list_id=todo_list)
-        form.save()
-        return redirect('list', pk=pk)
+        todo_list = ToDoList.objects.get(pk=pk)
+        form = todoitemForm(request.POST)
+        if form.is_valid():
+            form.instance.todo_list = todo_list
+            form.save()
+            return redirect('list', pk=pk)
 
 @login_required
 def createList(request):
@@ -120,12 +120,14 @@ def createList(request):
     else:
         title = request.POST.get('title')
         userID = user.id
+        if len(title.strip()) == 0:
+            return redirect('newlist')
         form = ToDoList(title=title, userID_id=userID)
         form.save()
-        return redirect('index')
+        return redirect('home')
 
 @login_required
 def deletelist(request, pk):
-    list = ToDoList.objects.get(pk=pk)
-    list.delete()
-    return redirect('index')
+    obj = ToDoList.objects.get(pk=pk)
+    obj.delete()
+    return redirect('home')
